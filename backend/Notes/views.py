@@ -18,5 +18,11 @@ class NotesView(APIView):
         notes = Notes.objects.all()
         serialize = NoteSerializer(notes, many=True)
         return Response(serialize.data)
-    # def post(self,request):
-    #     pass
+    
+    def post(self,request):
+        serialize = NoteSerializer(data=request.data)
+
+        if serialize.is_valid():
+            serialize.save()
+            return Response(serialize.data, status=status.HTTP_201_CREATED)
+        return Response(serialize.errors, status=status.HTTP_400_BAD_REQUEST)
